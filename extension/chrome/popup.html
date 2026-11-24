@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>TServer Downloader</title>
+<style>
+  body { width: 320px; margin: 0; padding: 16px; font: 14px system-ui, sans-serif; color: #222; }
+  h1 { font-size: 16px; margin: 0 0 8px; }
+  .status { padding: 8px 10px; border-radius: 8px; margin-bottom: 12px; font-weight: 600; }
+  .status.ok { background: #e6f4ea; color: #137333; }
+  .status.bad { background: #fce8e6; color: #a50e0e; }
+  .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid #eee; }
+  .row label { flex: 1; }
+  .muted { color: #666; font-size: 12px; }
+  .stats { margin-top: 8px; }
+  button.link { background: none; border: none; color: #1565c0; cursor: pointer; padding: 0; font-size: 13px; }
+  #error { color: #a50e0e; font-size: 12px; margin-top: 8px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<h1>TServer Downloader</h1>
+<div id="status" class="status bad">Checking connection…</div>
+<div class="row"><label for="adblock">Ad-blocker</label><input type="checkbox" id="adblock" checked></div>
+<div class="row"><label for="intercept">Download interception</label><input type="checkbox" id="intercept" checked></div>
+<div class="row"><label for="disableSite">Disable ad-block on this site</label><input type="checkbox" id="disableSite"></div>
+<div class="stats muted">Ads/trackers blocked: <span id="blocked">0</span><br>Media found on this page: <span id="media">0</span></div>
+<div id="error"></div>
+<p><button class="link" id="settings">Open settings</button></p>
+<script src="popup.js"></script>
+</body>
+</html>

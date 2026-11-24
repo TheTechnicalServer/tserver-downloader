@@ -1,0 +1,45 @@
+{
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  },
+  "browser_action": {
+    "default_title": "TServer Downloader"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "com.tserver.downloader@example.com",
+      "strict_min_version": "109.0"
+    }
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "content.js"
+      ],
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "description": "Send downloads to TServer Downloader, detect media on pages, and block ads and trackers.",
+  "manifest_version": 2,
+  "name": "TServer Downloader",
+  "permissions": [
+    "downloads",
+    "contextMenus",
+    "storage",
+    "webRequest",
+    "webRequestBlocking",
+    "tabs",
+    "nativeMessaging",
+    "<all_urls>"
+  ],
+  "version": "1.0.0",
+  "web_accessible_resources": [
+    "icons/icon48.png"
+  ]
+}

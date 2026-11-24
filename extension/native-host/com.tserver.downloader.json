@@ -1,0 +1,1 @@
+{"allowed_origins":["chrome-extension://REPLACE_WITH_EXTENSION_ID/"],"description":"TServer Downloader native messaging host","name":"com.tserver.downloader","path":"REPLACE_WITH_ABSOLUTE_PATH_TO_NATIVE_HOST","type":"stdio"}
