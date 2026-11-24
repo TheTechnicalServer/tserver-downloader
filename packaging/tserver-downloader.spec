@@ -46,10 +46,12 @@ else:
     print("NOTE: no icon found at packaging/tserver-downloader.ico; building without one.")
 
 # Collect PyQt6 fully (plugins, translations, Qt binaries).
-tmp_ret = collect_all("PyQt6")
-datas += tmp_ret["datas"]
-binaries += tmp_ret["binaries"]
-hiddenimports = list(tmp_ret["hiddenimports"])
+# PyInstaller 6.x: collect_all() returns a tuple
+# (datas, binaries, hiddenimports), NOT a dict.
+_pyqt_datas, _pyqt_binaries, _pyqt_hiddenimports = collect_all("PyQt6")
+datas += _pyqt_datas
+binaries += _pyqt_binaries
+hiddenimports = list(_pyqt_hiddenimports)
 hiddenimports += [
     "PyQt6.QtCore",
     "PyQt6.QtGui",
