@@ -25,7 +25,16 @@ import sys
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from .app import __version__, create_app
+if __package__ in (None, ""):
+    # __main__.py executed as a plain script (``python __main__.py`` or
+    # a PyInstaller entry point) has no parent package, so a relative
+    # import would raise "attempted relative import with no known parent
+    # package". Import absolutely instead; src/ is on sys.path in both
+    # cases (PyInstaller adds the bundle dir, plain runs add it here).
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+    from tserver_downloader.app import __version__, create_app
+else:
+    from .app import __version__, create_app
 
 logger = logging.getLogger("tserver_downloader")
 
@@ -318,7 +327,10 @@ def main(argv: list | None = None) -> int:
         )
         return 2
 
-    from .ui.main_window import MainWindow
+    try:
+        from .ui.main_window import MainWindow
+    except ImportError:  # same plain-script / frozen entry-point case
+        from tserver_downloader.ui.main_window import MainWindow
 
     window = MainWindow(
         settings, engine, state_store, log_file=log_path, data_dir=data_path
