@@ -16,8 +16,6 @@ falls back to a system ffmpeg on PATH. The same applies to the icon.
 import os
 from pathlib import Path
 
-from PyInstaller.utils.hooks import collect_all
-
 SPEC_DIR = Path(SPECPATH)  # noqa: F821 - provided by PyInstaller
 PROJECT_ROOT = SPEC_DIR.parent
 SRC_DIR = PROJECT_ROOT / "src"
@@ -45,14 +43,14 @@ if icon_candidate.exists():
 else:
     print("NOTE: no icon found at packaging/tserver-downloader.ico; building without one.")
 
-# Collect PyQt6 fully (plugins, translations, Qt binaries).
-# PyInstaller 6.x: collect_all() returns a tuple
-# (datas, binaries, hiddenimports), NOT a dict.
-_pyqt_datas, _pyqt_binaries, _pyqt_hiddenimports = collect_all("PyQt6")
-datas += _pyqt_datas
-binaries += _pyqt_binaries
-hiddenimports = list(_pyqt_hiddenimports)
-hiddenimports += [
+# Only the Qt modules the app actually uses (see src/: QtCore, QtGui,
+# QtWidgets). Do NOT use collect_all("PyQt6") here: it pulls in every
+# PyQt6 submodule (QtBluetooth, QtDesigner, QtQuick3D, QtSql, QtWebEngine,
+# ...) and PyInstaller then spends 40+ minutes analysing and copying
+# hundreds of MB of DLLs the app never uses. That is what stalled
+# Run #2 for 45 minutes. PyInstaller's standard hooks already collect
+# the plugins/translations for the modules listed below.
+hiddenimports = [
     "PyQt6.QtCore",
     "PyQt6.QtGui",
     "PyQt6.QtWidgets",
@@ -86,7 +84,11 @@ exe = EXE(
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
+    # UPX disabled: compressing ~200 MB of Qt binaries with UPX is
+    # extremely slow on GitHub runners and can stall the build for
+    # 20+ minutes. Output is slightly larger without it; the app
+    # and installer work exactly the same.
+    upx=False,
     console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
@@ -102,7 +104,7 @@ coll = COLLECT(
     a.zipfiles,
     a.datas,
     strip=False,
-    upx=True,
+    upx=False,
     upx_exclude=[],
     name="TServerDownloader",
 )
