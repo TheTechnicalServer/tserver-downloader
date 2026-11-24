@@ -41,15 +41,18 @@ jobs:
         run: pytest -q
       - name: Build app with PyInstaller
         run: pyinstaller packaging/tserver-downloader.spec --noconfirm
-      - name: Build installer with Inno Setup
-        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
-        with:
-          path: installer/tserver-downloader.iss
+      # Upload the app FIRST, before the installer step: if Inno Setup
+      # ever hangs or fails, the working .exe is still available as an
+      # artifact instead of being blocked behind the installer.
       - name: Upload app artifact
         uses: actions/upload-artifact@v4
         with:
           name: TServerDownloader-windows
           path: dist/TServerDownloader
+      - name: Build installer with Inno Setup
+        uses: Minionguyjpro/Inno-Setup-Action@v1.2.5
+        with:
+          path: installer/tserver-downloader.iss
       - name: Upload installer artifact
         uses: actions/upload-artifact@v4
         with:
